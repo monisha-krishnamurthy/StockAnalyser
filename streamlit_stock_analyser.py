@@ -5,8 +5,24 @@ from data_downloader import get_stock_data
 from kpis import compute_kpis, format_kpis_for_prompt
 from stock_analyser import ask_gpt_to_analyze
 
+# Performance optimizations for cloud deployment
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def cached_get_stock_data(ticker: str, period: str):
+    """Cache stock data to avoid repeated API calls"""
+    return get_stock_data(ticker, period=period)
+
+@st.cache_data(ttl=1800)  # Cache for 30 minutes
+def cached_compute_kpis(df):
+    """Cache KPI calculations"""
+    return compute_kpis(df)
+
+@st.cache_data(ttl=1800)  # Cache for 30 minutes
+def cached_ai_analysis(metrics_text: str, model_name: str, temperature: float):
+    """Cache AI analysis to avoid repeated API calls"""
+    return ask_gpt_to_analyze(metrics_text, model_name, temperature)
+
 def create_stock_chart(df, ticker):
-    """Create an interactive stock price chart with candlesticks and moving averages"""
+    """Create an interactive stock price chart with candlestick and moving averages"""
     fig = go.Figure()
     
     # Candlestick chart
@@ -180,6 +196,11 @@ def main():
         st.markdown("- Use 4-5 letter ticker symbols")
         st.markdown("- Longer periods provide more reliable indicators")
         st.markdown("- Lower creativity = more consistent analysis")
+        
+        # Deployment info
+        st.markdown("---")
+        st.markdown("**🚀 Deployed on Streamlit Cloud**")
+        st.markdown("Auto-updates on every push!")
 
     # Main content area
     col1, col2 = st.columns([2, 1])
@@ -211,10 +232,10 @@ def main():
         try:
             # Progress indicators with spinners
             with st.spinner("📥 Fetching stock data..."):
-                df = get_stock_data(ticker, period=period)
+                df = cached_get_stock_data(ticker, period)
 
             with st.spinner("🧮 Computing technical indicators..."):
-                kpis = compute_kpis(df)
+                kpis = cached_compute_kpis(df)
 
             # Display metrics
             st.subheader("📈 Key Metrics")
@@ -233,7 +254,7 @@ def main():
             # Generate AI analysis
             with st.spinner("🤖 Generating AI analysis..."):
                 metrics_text = format_kpis_for_prompt(ticker, kpis)
-                analysis = ask_gpt_to_analyze(metrics_text, model, temperature)
+                analysis = cached_ai_analysis(metrics_text, model, temperature)
 
             # Display analysis in a styled box
             st.subheader("🤖 AI Analysis")
@@ -270,6 +291,7 @@ def main():
     <div style='text-align: center; color: #666;'>
         <p>📈 Stock Analyser Pro - Powered by AI & Technical Analysis</p>
         <p>Built with Streamlit, OpenAI GPT, and Yahoo Finance</p>
+        <p>🚀 Hosted on Streamlit Cloud</p>
     </div>
     """, unsafe_allow_html=True)
 
