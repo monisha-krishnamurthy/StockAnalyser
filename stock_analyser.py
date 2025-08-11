@@ -27,7 +27,7 @@ KPIs:
 # -------------------------
 # Main runner
 # -------------------------
-def analyze_ticker(ticker: str, period: str = "2y"):
+def analyze_ticker(ticker: str, period: str = "2y", model_name: str = "gpt-4o", temperature: float = 0.0):
     df = get_stock_data(ticker, period=period)
 
     # compute indicators used in KPIs (we already compute inside compute_kpis)
@@ -37,7 +37,7 @@ def analyze_ticker(ticker: str, period: str = "2y"):
     print("----- KPI SUMMARY -----")
     print(metrics_text)
     print("\n----- GPT ANALYSIS -----")
-    analysis = ask_gpt_to_analyze(metrics_text)
+    analysis = ask_gpt_to_analyze(metrics_text, model_name, temperature)
     print(analysis)
 
 if __name__ == "__main__":

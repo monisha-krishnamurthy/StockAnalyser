@@ -31,12 +31,17 @@ def annualized_volatility(series: pd.Series, trading_days: int = 252) -> float:
 
 def compute_kpis(df: pd.DataFrame) -> dict:
     close = df["Adj Close"] if "Adj Close" in df.columns else df["Close"]
+    
+    # Calculate technical indicators and add them to the dataframe
+    df['SMA_50'] = compute_sma(close, 50)
+    df['SMA_200'] = compute_sma(close, 200)
+    
     kpis = {}
     kpis["latest_close"] = float(close.iloc[-1])
     kpis["1d_return_pct"] = float((close.iloc[-1] / close.iloc[-2] - 1) * 100) if len(close) >= 2 else 0.0
     kpis["30d_return_pct"] = float((close.iloc[-1] / close.iloc[-21] - 1) * 100) if len(close) >= 22 else 0.0
-    kpis["sma_50"] = float(compute_sma(close, 50).iloc[-1])
-    kpis["sma_200"] = float(compute_sma(close, 200).iloc[-1])
+    kpis["sma_50"] = float(df['SMA_50'].iloc[-1])
+    kpis["sma_200"] = float(df['SMA_200'].iloc[-1])
     kpis["rsi_14"] = float(compute_rsi(close, 14).iloc[-1])
     kpis["annual_volatility_pct"] = float(annualized_volatility(close) * 100)
     return kpis

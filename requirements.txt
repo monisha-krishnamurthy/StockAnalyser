@@ -7,3 +7,4 @@ matplotlib
 python-dotenv
 streamlit
 langchain-community
+plotly 
