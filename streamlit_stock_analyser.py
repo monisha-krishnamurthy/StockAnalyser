@@ -4,6 +4,7 @@ import plotly.express as px
 from data_downloader import get_stock_data
 from kpis import compute_kpis, format_kpis_for_prompt
 from stock_analyser import ask_gpt_to_analyze
+from usage_limits import UsageLimitError
 
 # Performance optimizations for cloud deployment
 @st.cache_data(ttl=3600)  # Cache for 1 hour
@@ -275,6 +276,8 @@ def main():
                 if st.button("📈 Export Chart"):
                     st.info("🖼️ Chart exported successfully!")
 
+        except UsageLimitError as e:
+            st.warning(str(e))
         except Exception as e:
             st.error(f"❌ An error occurred: {str(e)}")
             st.info("💡 Try checking if the ticker symbol is correct and try again")

@@ -57,3 +57,15 @@ Historical prices → calculated indicators → formatted metric summary → LLM
 This is an educational prototype. Generated commentary is not a validated prediction or investment recommendation. Data availability and model access depend on external services.
 
 Dependencies use broad version ranges, and the analysis module uses older LangChain interfaces; compatibility needs checking in a fresh environment. The metric labeled `30d_return_pct` uses a trading-row offset rather than an exact calendar-month interval. Export and portfolio comparison are not implemented features.
+
+## Demo usage controls
+
+Each deployment allows at most **5 uncached AI requests per rolling minute** and
+**50 per rolling 24 hours**, shared across all visitors. Requests are reserved
+atomically in SQLite before calling the provider; failed attempts count too.
+Automatic provider retries are disabled. Cached results do not consume this quota.
+AI responses are capped at **500 output tokens**.
+
+Counters survive browser refreshes and clearing chat, but may reset when hosting
+replaces the local filesystem. Separate instances have separate counters. These
+controls reduce usage; they are not a hard dollar cap or per-person authentication.
