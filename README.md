@@ -15,6 +15,8 @@ A Python dashboard that combines historical stock data, technical indicators, an
 ### AI Commentary
 ![AI-generated commentary based on stock metrics](docs/stock-analysis.png)
 
+[Try the live dashboard](https://aistockanalyser.streamlit.app/)
+
 ## Features
 
 - Retrieve historical prices for a selected ticker and time period.
