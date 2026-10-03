@@ -1,113 +1,57 @@
-# 📈 Stock Analyser Pro
+# Stock Analyser
 
-A professional-grade stock analysis application that combines traditional technical indicators with AI-powered insights using OpenAI's GPT models.
+A Python dashboard that combines historical stock data, technical indicators, and LLM-generated commentary in one exploratory interface.
 
-## ✨ Features
+**Stack:** Python · Streamlit · yfinance · pandas · NumPy · Plotly · LangChain · OpenAI API
 
-- **📊 Interactive Stock Charts**: Candlestick charts with moving averages
-- **📈 Technical Indicators**: RSI, SMA, volatility, and return metrics
-- **🤖 AI Analysis**: Professional investment insights powered by GPT
-- **🎨 Modern UI**: Beautiful, responsive interface built with Streamlit
-- **⚙️ Configurable**: Adjustable AI models and creativity settings
-- **📱 Mobile Friendly**: Responsive design for all devices
+## Preview
 
-## 🚀 Quick Start
+### Key Metrics
+![Stock dashboard displaying calculated metrics](docs/stock-metrics.png)
 
-### 1. Install Dependencies
+### Price Chart
+![Historical stock prices and moving averages](docs/stock-chart.png)
+
+### AI Commentary
+![AI-generated commentary based on stock metrics](docs/stock-analysis.png)
+
+## Features
+
+- Retrieve historical prices for a selected ticker and time period.
+- Explore price charts and 50- and 200-period moving averages.
+- Calculate daily returns, RSI, and annualized volatility.
+- Generate commentary from a formatted summary of the calculated metrics.
+
+## Run locally
+
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/monisha-krishnamurthy/StockAnalyser.git
+cd StockAnalyser
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
-### 2. Set Environment Variables
-Create a `.env` file in the project root:
-```bash
-OPENAI_API_KEY=your_openai_api_key_here
-```
+Configure `OPENAI_API_KEY` in your local environment or `.env` file, then launch:
 
-### 3. Run the Application
 ```bash
 streamlit run streamlit_stock_analyser.py
 ```
 
-## 🎯 How to Use
+Select a ticker, period, and available model settings in the interface. Market data requires an internet connection; OpenAI calls require API access and may incur charges. Never commit a real key to the tracked placeholder `.env` file.
 
-1. **Enter Stock Ticker**: Type a valid stock symbol (e.g., AAPL, MSFT, GOOGL)
-2. **Select Time Period**: Choose from 1 year, 2 years, or 5 years of data
-3. **Configure AI Settings**: Adjust model and creativity in the sidebar
-4. **Analyze**: Click "Analyze Stock" to get comprehensive insights
-5. **Review Results**: View metrics, charts, and AI-generated analysis
+## How it works
 
-## 🔧 Configuration Options
+Historical prices → calculated indicators → formatted metric summary → LLM commentary.
 
-### AI Model Selection
-- **GPT-4o**: Most advanced analysis (default)
-- **GPT-3.5-turbo**: Faster, cost-effective analysis
+- `data_downloader.py`: price retrieval.
+- `kpis.py`: indicator calculations and prompt formatting.
+- `stock_analyser.py`: LangChain/OpenAI analysis functions and a command-line example.
+- `streamlit_stock_analyser.py`: dashboard interface.
+- `test_deployment.py`: deployment diagnostic script.
 
-### Creativity Control
-- **Low (0.0)**: Consistent, conservative analysis
-- **High (1.0)**: More creative, varied insights
+## Limitations
 
-### Display Options
-- **Price Chart**: Interactive candlestick chart with moving averages
-- **Detailed Metrics**: Comprehensive KPI breakdown
+This is an educational prototype. Generated commentary is not a validated prediction or investment recommendation. Data availability and model access depend on external services.
 
-## 📊 Technical Indicators
-
-- **Price Metrics**: Latest close, daily returns, 30-day performance
-- **Moving Averages**: 50-day and 200-day SMAs
-- **Momentum**: 14-period RSI
-- **Risk**: Annualized volatility
-
-## 🏗️ Architecture
-
-- **Data Layer**: Yahoo Finance integration via `yfinance`
-- **Analysis Engine**: Technical indicators and KPI calculations
-- **AI Integration**: OpenAI GPT via LangChain
-- **Frontend**: Streamlit web application
-- **Visualization**: Plotly interactive charts
-
-## 📁 Project Structure
-
-```
-StockAnalyser/
-├── streamlit_stock_analyser.py  # Main web application
-├── stock_analyser.py            # AI analysis engine
-├── kpis.py                      # Technical indicators
-├── data_downloader.py           # Data fetching
-├── requirements.txt             # Dependencies
-└── README.md                   # This file
-```
-
-## 🎨 UI Improvements Made
-
-- ✨ Professional styling with custom CSS
-- 📱 Responsive layout with sidebar configuration
-- 🎯 Interactive metric cards with color coding
-- 📊 Beautiful stock price charts
-- 🔄 Progress indicators and loading states
-- ⚠️ Enhanced error handling and validation
-- 💾 Export functionality (placeholder)
-- 🎨 Modern color scheme and typography
-
-## 🔮 Future Enhancements
-
-- [ ] Stock comparison functionality
-- [ ] Portfolio analysis tools
-- [ ] Advanced charting indicators
-- [ ] Export to PDF/Excel
-- [ ] Historical analysis tracking
-- [ ] Real-time alerts and notifications
-
-## 🛠️ Requirements
-
-- Python 3.7+
-- OpenAI API key
-- Internet connection for stock data
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests. 
+Dependencies use broad version ranges, and the analysis module uses older LangChain interfaces; compatibility needs checking in a fresh environment. The metric labeled `30d_return_pct` uses a trading-row offset rather than an exact calendar-month interval. Export and portfolio comparison are not implemented features.

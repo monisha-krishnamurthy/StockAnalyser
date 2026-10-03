@@ -1,15 +1,16 @@
 from data_downloader import get_stock_data
 from kpis import compute_kpis, format_kpis_for_prompt
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 
 import os
 
 load_dotenv()
 
-def ask_gpt_to_analyze(metrics_text: str, model_name: str = "gpt-4o", temperature: float = 0.0, api_key = os.getenv("OPENAI_API_KEY")) -> str:
-    # ChatOpenAI will pick API key from OPENAI_API_KEY env var by default
-    chat = ChatOpenAI(model_name=model_name, temperature=temperature)
+def ask_gpt_to_analyze(metrics_text: str, model_name: str = "gpt-4o", temperature: float = 0.0, api_key=None) -> str:
+    # Use an explicitly supplied key or the local environment.
+    chat = ChatOpenAI(model=model_name, temperature=temperature,
+                      api_key=api_key or os.getenv("OPENAI_API_KEY"))
     prompt = f"""
 You are a professional investment analyst. Given the stock KPIs below, provide:
 1) A concise summary (2-4 sentences).
@@ -20,9 +21,9 @@ You are a professional investment analyst. Given the stock KPIs below, provide:
 KPIs:
 {metrics_text}
 """
-    # ChatOpenAI supports .predict() which accepts a string prompt
-    response = chat.predict(prompt)
-    return response
+    # invoke returns a message; the interface expects its text content.
+    response = chat.invoke(prompt)
+    return response.content
 
 # -------------------------
 # Main runner
